@@ -1,0 +1,9 @@
+# Core image processing and numerical computation
+numpy>=1.24.0
+opencv-python>=4.8.0
+
+# Configuration file parsing
+PyYAML>=6.0.1
+
+# Anti-aliased TTF text rendering for OSD
+Pillow>=10.0.0

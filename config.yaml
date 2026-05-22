@@ -1,0 +1,107 @@
+# =============================================================================
+# Day/Night Scene Recognition Configuration
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# 0. Input Source Settings
+# -----------------------------------------------------------------------------
+input_path: "./videos/"             # Single file path OR folder path
+video_extension: ".mp4"             # Target extension when input_path is a folder
+
+# -----------------------------------------------------------------------------
+# 1. Display Settings
+# -----------------------------------------------------------------------------
+display_scale: 0.75                 # Output window scale relative to INPUT video resolution
+                                    # Applied AFTER OSD/ROI overlay on original frame
+                                    # 1.0 = Same as input video native resolution
+                                    # 0.75 = 75% of input video resolution
+                                    # 0.5  = Half of input video resolution
+                                    # Algorithm speed is NOT affected by this value
+
+# -----------------------------------------------------------------------------
+# 2. Image & Video Settings
+# -----------------------------------------------------------------------------
+image_zoom_out_ratio: 1.25          # Analysis downscale factor (fixed for performance)
+video_width: 1280                   # Reference width for ROI ratio calculation
+video_height: 720                   # Reference height for ROI ratio calculation
+
+# -----------------------------------------------------------------------------
+# 3. ROI Settings (Ratio-Based Auto-Calculation)
+# -----------------------------------------------------------------------------
+# Defines the sky region to exclude non-sky areas (road, vehicles, buildings),
+# improving classification accuracy and reducing computational load.
+# Defined as ratios relative to video dimensions for automatic adaptation
+# to any input resolution (720p, 1080p, 4K, etc.).
+#
+# BONNET LINE ALIGNMENT GUIDE:
+#   The BOTTOM edge of the ROI MUST align with the vehicle bonnet (hood) line.
+#   This is the single most critical ROI tuning parameter.
+#
+#   How to verify:
+#     1. Set show_process: true and draw_roi_on_main: true in this config
+#     2. Run the algorithm on representative driving footage
+#     3. Check if the GREEN rectangle's bottom edge sits exactly on the bonnet top
+#
+#   How to adjust:
+#     - Bottom edge is ABOVE bonnet (road visible) → INCREASE roi_height_ratio
+#       or DECREASE roi_y_ratio (e.g., +0.01 ~ +0.02 increments)
+#     - Bottom edge is BELOW bonnet (bonnet visible) → DECREASE roi_height_ratio
+#       or INCREASE roi_y_ratio (e.g., -0.01 ~ -0.02 increments)
+#     - Fine-tune in 0.005 steps once roughly aligned
+#
+#   Important notes:
+#     - Ratio-based: same values work for ANY input resolution automatically
+#     - Camera-dependent: different mounting angle/position requires re-tuning
+#     - Vehicle-dependent: sedan/SUV/truck have different bonnet shapes
+#     - Fixed ROI: does NOT adapt to vibration or slope changes dynamically
+#     - Recommended: validate against 3-5 representative clips (day/night/tunnel)
+#       before finalizing values
+
+roi_zoom_out_ratio: 4           # Additional downscale within ROI before analysis
+roi_x_ratio: 0.1875             # ROI top-left X as fraction of video width
+roi_y_ratio: 0.1167             # ROI top-left Y as fraction of video height
+roi_width_ratio: 0.425          # ROI width as fraction of video width
+roi_height_ratio: 0.2528        # ROI height as fraction of video height
+                                # ★ PRIMARY TUNING TARGET for bonnet alignment
+                                # Adjust this value so ROI bottom = bonnet top line
+
+# -----------------------------------------------------------------------------
+# 4. STEP 1 Thresholds (Histogram-Based Primary Classification)
+# -----------------------------------------------------------------------------
+night_min_intensity_step1: 0
+night_max_intensity_step1: 100
+day_min_intensity_step1: 150
+day_max_intensity_step1: 255
+min_day_ratio_step1: 0.3
+min_night_ratio_step1: 0.9
+
+# -----------------------------------------------------------------------------
+# 5. STEP 2 Thresholds (Edge + Morphology Secondary Night Classification)
+# -----------------------------------------------------------------------------
+min_edge_magnitude_step2: 40
+night_min_intensity_step2: 1
+night_max_intensity_step2: 130
+min_night_ratio_step2: 0.87
+
+# -----------------------------------------------------------------------------
+# 6. Result Flags
+# -----------------------------------------------------------------------------
+flag_day: 1
+flag_night: 2
+flag_unknown: 3
+
+# -----------------------------------------------------------------------------
+# 7. Debug / Display Options
+# -----------------------------------------------------------------------------
+show_process: true
+show_debug_windows: false
+draw_roi_on_main: false
+
+# -----------------------------------------------------------------------------
+# 8. Temporal Stability Parameters
+# -----------------------------------------------------------------------------
+fps: 30.0
+min_duration_sec: 2.0
+vote_window: 5
+day_exit_thresh: 0.15
+night_exit_thresh: 0.70
