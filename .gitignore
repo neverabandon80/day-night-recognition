@@ -3,3 +3,5 @@
 ".venv/" 
 "videos/" 
 "assets/" 
+.idea/ 
+__pycache__/ 
