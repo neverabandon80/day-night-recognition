@@ -6,7 +6,7 @@
 
 ## 📌 Overview
 
-This repository provides a production-grade, real-time day/night scene classification engine optimized for **CPU-only** environments. Originally ported from a legacy C++ implementation, the algorithm has been fully re-engineered using NumPy vectorization and OpenCV primitives to achieve **350+ FPS on Full-HD (1920×1080)** without any GPU acceleration.
+This repository provides a production-grade, real-time day/night scene classification engine optimized for CPU-only environments. The pipeline is implemented using NumPy vectorization and OpenCV primitives, achieving 350+ FPS on Full-HD (1920×1080) without any GPU acceleration.
 
 The system analyzes sky region luminance distributions and edge characteristics to classify driving scenes as **Day**, **Night**, or **Unknown**, with built-in temporal stabilization to prevent state flipping in tunnels and under artificial lighting.
 
@@ -137,9 +137,6 @@ See inline comments in `config.yaml` for detailed mathematical meaning and tunin
 | Metric | Value | Test Environment |
 | :--- | :--- | :--- |
 | **Pure Algorithm FPS** | **350+** | Intel Core i7-10700 @ 2.90GHz, 1920×1080 |
-| End-to-End FPS | ~120 | Including decode, resize, render, waitKey |
-| Memory Usage | ~150 MB | Single 1080p stream |
-| CPU Utilization | ~15% | Single-core bound (vectorized) |
 
 > ⚡ FPS measured via `time.perf_counter()` wrapping only `analyzer.run()`. Excludes video decoding, frame resizing, OSD rendering, and display sync.
 
@@ -168,12 +165,6 @@ The bottom edge of the ROI **must align with the vehicle bonnet (hood) line**. T
 4.  Validate against 3–5 clips covering day, night, and tunnel scenarios
 
 See the `★ BONNET LINE ALIGNMENT GUIDE` section in `config.yaml` for full details.
-
-## 📚 References
-
--   Roy & Vetterli, *"The Effective Rank: A Measure of Effective Dimensionality"*, EUSIPCO 2007
--   Morcos et al., *"On the Importance of Single Directions for Generalization"*, ICLR 2018
--   BT.601 Luminance Standard (ITU-R Recommendation)
 
 ## 📄 License
 
