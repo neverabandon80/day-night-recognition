@@ -164,7 +164,7 @@ The bottom edge of the ROI **must align with the vehicle bonnet (hood) line**. T
 3.  Adjust `roi_height_ratio` in 0.005 increments until the green rectangle's bottom edge sits exactly on the bonnet top
 4.  Validate against 3–5 clips covering day, night, and tunnel scenarios
 
-See the `★ BONNET LINE ALIGNMENT GUIDE` section in `config.yaml` for full details.
+See the `BONNET LINE ALIGNMENT GUIDE` section in `config.yaml` for full details.
 
 ## 📄 License
 
